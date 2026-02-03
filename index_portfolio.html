@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Walid Hadri — ML Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a24;
+            --text-primary: #e0e0e0;
+            --text-secondary: #888;
+            --text-muted: #555;
+            --accent: #00ff9d;
+            --accent-dim: #00ff9d33;
+            --accent-secondary: #00d4ff;
+            --border: #2a2a3a;
+            --glow: 0 0 20px rgba(0, 255, 157, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Scanline overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.1) 2px,
+                rgba(0, 0, 0, 0.1) 4px
+            );
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* ML terms background */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .ml-term {
+            position: absolute;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            white-space: nowrap;
+            pointer-events: none;
+            animation: float-down linear infinite;
+        }
+
+        .ml-term.layer-back {
+            font-size: 10px;
+            opacity: 0.03;
+        }
+
+        .ml-term.layer-mid {
+            font-size: 12px;
+            opacity: 0.06;
+        }
+
+        .ml-term.layer-front {
+            font-size: 14px;
+            opacity: 0.1;
+        }
+
+        @keyframes float-down {
+            0% {
+                transform: translateY(-100px);
+            }
+            100% {
+                transform: translateY(calc(100vh + 100px));
+            }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1rem 2rem;
+            background: linear-gradient(to bottom, var(--bg-primary), transparent);
+            backdrop-filter: blur(10px);
+        }
+
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-logo::before {
+            content: '>';
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s, text-shadow 0.3s;
+            position: relative;
+        }
+
+        .nav-links a::before {
+            content: './';
+            color: var(--text-muted);
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+            text-shadow: var(--glow);
+        }
+
+        /* Main content */
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding-top: 4rem;
+            position: relative;
+        }
+
+        .terminal-window {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .terminal-window::before,
+        .terminal-window::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .terminal-window::before {
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 157, 0.03), transparent);
+            animation: glitch-scan 4s linear infinite;
+        }
+
+        .terminal-window::after {
+            background: rgba(0, 255, 157, 0.02);
+            animation: glitch-flash 8s infinite;
+        }
+
+        @keyframes glitch-scan {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        @keyframes glitch-flash {
+            0%, 90%, 92%, 94%, 96%, 100% {
+                opacity: 0;
+            }
+            91%, 93%, 95% {
+                opacity: 1;
+            }
+        }
+
+        .terminal-header {
+            background: var(--bg-tertiary);
+            padding: 0.75rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .terminal-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-btn.red { background: #ff5f56; }
+        .terminal-btn.yellow { background: #ffbd2e; }
+        .terminal-btn.green { background: #27ca40; }
+
+        .terminal-title {
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .terminal-body {
+            padding: 2rem;
+        }
+
+        .command-line {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .prompt {
+            color: var(--accent);
+            margin-right: 0.75rem;
+            user-select: none;
+        }
+
+        .command {
+            color: var(--text-primary);
+        }
+
+        .output {
+            padding-left: 0;
+            margin-top: 1.5rem;
+        }
+
+        .hero-name {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-name .highlight {
+            color: var(--accent);
+            text-shadow: var(--glow);
+        }
+
+        .hero-title {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-title span {
+            color: var(--accent-secondary);
+        }
+
+        .hero-bio {
+            color: var(--text-secondary);
+            max-width: 600px;
+            font-size: 0.95rem;
+        }
+
+        .hero-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .status-banner {
+            display: none;
+        }
+
+        .hero-status {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 4rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .scroll-arrow {
+            font-size: 2.5rem;
+            color: var(--accent);
+            animation: bounce 2s ease-in-out infinite;
+            text-shadow: var(--glow);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(12px);
+            }
+            60% {
+                transform: translateY(6px);
+            }
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px var(--accent); }
+            50% { opacity: 0.5; box-shadow: 0 0 5px var(--accent); }
+        }
+
+        .hero-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .hero-link:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+            box-shadow: var(--glow);
+            transform: translateY(-2px);
+        }
+
+        /* Section headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .section-header h2::before {
+            content: '# ';
+            color: var(--accent);
+        }
+
+        .section-header::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--border), transparent);
+        }
+
+        /* About section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .about-content {
+                grid-template-columns: 2fr 1fr;
+            }
+        }
+
+        .about-text {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .about-text p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .about-text p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-shadow: var(--glow);
+        }
+
+        .stat-value.small {
+            font-size: 1.2rem;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Skills section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .skill-category {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .skill-category:hover {
+            border-color: var(--accent-dim);
+            transform: translateY(-4px);
+        }
+
+        .skill-category h3 {
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .skill-category h3::before {
+            content: '>';
+            color: var(--text-muted);
+        }
+
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            padding: 0.35rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            border: 1px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .skill-tag:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Experience & Education Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent), var(--border));
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            border: 2px solid var(--accent);
+            box-shadow: var(--glow);
+        }
+
+        .timeline-item.current::before {
+            background: var(--accent);
+        }
+
+        .timeline-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .timeline-card:hover {
+            border-color: var(--accent-dim);
+            transform: translateX(8px);
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .timeline-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .timeline-date {
+            font-size: 0.8rem;
+            color: var(--accent);
+            background: var(--accent-dim);
+            padding: 0.25rem 0.6rem;
+            border-radius: 3px;
+        }
+
+        .timeline-company {
+            font-size: 0.9rem;
+            color: var(--accent-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-location {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .timeline-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .timeline-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .timeline-tag {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            background: var(--bg-tertiary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+        }
+
+        /* Projects section */
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--accent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .project-card:hover {
+            border-color: var(--accent-dim);
+            transform: translateX(8px);
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .project-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .project-title::before {
+            content: '~/projects/';
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .project-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.3s;
+        }
+
+        .project-link:hover {
+            color: var(--accent);
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-tag {
+            font-size: 0.75rem;
+            color: var(--accent);
+            background: var(--accent-dim);
+            padding: 0.25rem 0.6rem;
+            border-radius: 3px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem;
+            border-top: 1px solid var(--border);
+            margin-top: 4rem;
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 2rem;
+            position: relative;
+            box-shadow: 0 0 40px rgba(0, 255, 157, 0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 2rem;
+            cursor: pointer;
+            transition: color 0.3s;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--accent);
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h3 {
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-company {
+            color: var(--accent);
+            font-size: 1rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .modal-date {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .modal-body h4 {
+            color: var(--accent-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .modal-body > p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .modal-section {
+            margin-bottom: 1.25rem;
+            padding-left: 1rem;
+            border-left: 2px solid var(--accent-dim);
+        }
+
+        .modal-section h5 {
+            color: var(--accent);
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-section p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .modal-impact {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--accent-dim);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .modal-impact strong {
+            color: var(--accent);
+        }
+
+        .modal-link {
+            display: inline-block;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+
+        .modal-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .card-hint {
+            display: block;
+            margin-top: 1rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .timeline-card[data-modal] {
+            cursor: pointer;
+        }
+
+        .timeline-card[data-modal]:hover .card-hint {
+            color: var(--accent);
+        }
+
+        /* Modal scrollbar */
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .modal-content::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        .footer-text {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .footer-text a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .footer-prompt {
+            margin-top: 1rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .footer-prompt::after {
+            content: '█';
+            animation: blink 1s infinite;
+            margin-left: 0.25rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+                font-size: 0.75rem;
+            }
+
+            .nav-links a::before {
+                display: none;
+            }
+
+            main {
+                padding: 1rem;
+            }
+
+            .terminal-body {
+                padding: 1.5rem;
+            }
+
+            .hero-links {
+                flex-direction: column;
+            }
+
+            .hero-link {
+                justify-content: center;
+            }
+
+            .timeline {
+                padding-left: 1.5rem;
+            }
+
+            .timeline-item {
+                padding-left: 1rem;
+            }
+
+            .timeline-item::before {
+                left: -1.5rem;
+            }
+        }
+
+        /* Selection color */
+        ::selection {
+            background: var(--accent);
+            color: var(--bg-primary);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-dim);
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix background -->
+    <div class="matrix-bg" id="matrix"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-content">
+            <a href="#" class="nav-logo">walid_hadri</a>
+            <ul class="nav-links">
+                <li><a href="#about">about</a></li>
+                <li><a href="#experience">experience</a></li>
+                <li><a href="#education">education</a></li>
+                <li><a href="#skills">skills</a></li>
+                <li><a href="#projects">projects</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <span class="terminal-btn red"></span>
+                    <span class="terminal-btn yellow"></span>
+                    <span class="terminal-btn green"></span>
+                    <span class="terminal-title">bash — portfolio</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="command-line">
+                        <span class="prompt">$</span>
+                        <span class="command">whoami</span>
+                    </div>
+                    <div class="output">
+                        <h1 class="hero-name">Walid <span class="highlight">Hadri</span></h1>
+                        <p class="hero-title"><span>Machine Learning Engineer</span> & R&D</p>
+                        <p class="hero-bio">
+                            Building intelligent, scalable state-of-the-art AI models to process real-world data. 
+                            Passionate about making complex AI concepts accessible to both technical and non-technical audiences.
+                        </p>
+                        <div class="hero-links">
+                            <a href="mailto:your@email.com" class="hero-link">
+                                <span>📧</span> email
+                            </a>
+                            <a href="https://github.com/walidhadri" class="hero-link" target="_blank">
+                                <span>⌘</span> github
+                            </a>
+                            <a href="https://linkedin.com/in/walid-hadri-16438b175" class="hero-link" target="_blank">
+                                <span>◉</span> linkedin
+                            </a>
+                            <a href="https://walidhadri.medium.com" class="hero-link" target="_blank">
+                                <span>✎</span> medium
+                            </a>
+                        </div>
+                        <p class="hero-status">
+                            <span class="status-indicator"></span>
+                            walid.exe is currently in front of his PC building something...
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Scroll indicator -->
+            <div class="scroll-indicator">
+                <span class="scroll-arrow">↓</span>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about">
+            <div class="section-header">
+                <h2>about</h2>
+            </div>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>
+                        Machine Learning Engineer with a strong foundation in applied mathematics 
+                        and data science from CentraleSupélec. I specialize in Document AI and 
+                        Large Language Models, with a focus on studying and implementing 
+                        state-of-the-art research.
+                    </p>
+                    <p>
+                        My journey spans from autonomous vehicles research to quantitative finance 
+                        to AI R&D. Today, I'm passionate about building LLM-powered agents for 
+                        real-world automation — from vibe coding and video generation to websites, 
+                        APIs, and task workflows.
+                    </p>
+                    <p>
+                        I believe complex ideas deserve simple explanations. I share what I learn 
+                        through articles and open-source repos, making AI accessible to both 
+                        technical and non-technical audiences.
+                    </p>
+                </div>
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <div class="stat-value small">Document AI</div>
+                        <div class="stat-label">specialization</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value small">LLMs & Agents</div>
+                        <div class="stat-label">current focus</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value small">CentraleSupélec</div>
+                        <div class="stat-label">alumni</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value small">Paris</div>
+                        <div class="stat-label">based in</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience">
+            <div class="section-header">
+                <h2>experience</h2>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item current">
+                    <div class="timeline-card" data-modal="upskills-modal">
+                        <div class="timeline-header">
+                            <h3 class="timeline-title">Machine Learning Engineer & R&D</h3>
+                            <span class="timeline-date">Jan 2023 — Present</span>
+                        </div>
+                        <p class="timeline-company">Upskills</p>
+                        <p class="timeline-location">Paris, France</p>
+                        <p class="timeline-description">
+                            R&D in Computer Vision and Natural Language Processing. 
+                            Study and implementation of state-of-the-art models and techniques.
+                        </p>
+                        <div class="timeline-tags">
+                            <span class="timeline-tag">Computer Vision</span>
+                            <span class="timeline-tag">NLP</span>
+                            <span class="timeline-tag">Deep Learning</span>
+                            <span class="timeline-tag">R&D</span>
+                        </div>
+                        <span class="card-hint">click for details</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-card" data-modal="credit-agricole-modal">
+                        <div class="timeline-header">
+                            <h3 class="timeline-title">AI Research Scientist</h3>
+                            <span class="timeline-date">May 2022 — Nov 2022</span>
+                        </div>
+                        <p class="timeline-company">Groupe Crédit Agricole — DataLab</p>
+                        <p class="timeline-location">Paris, France</p>
+                        <p class="timeline-description">
+                            Intern at the DataLab working on research topics with focus on text classification.
+                        </p>
+                        <div class="timeline-tags">
+                            <span class="timeline-tag">Text Classification</span>
+                            <span class="timeline-tag">NLP</span>
+                            <span class="timeline-tag">Research</span>
+                        </div>
+                        <span class="card-hint">click for details</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-card" data-modal="arval-modal">
+                        <div class="timeline-header">
+                            <h3 class="timeline-title">Quantitative Analyst</h3>
+                            <span class="timeline-date">Mar 2021 — Aug 2021</span>
+                        </div>
+                        <p class="timeline-company">Arval BNP Paribas Group</p>
+                        <p class="timeline-location">Paris, France</p>
+                        <p class="timeline-description">
+                            Prediction of the residual value of vehicles after a leasing contract.
+                        </p>
+                        <div class="timeline-tags">
+                            <span class="timeline-tag">Predictive Modeling</span>
+                            <span class="timeline-tag">Finance</span>
+                            <span class="timeline-tag">Data Analysis</span>
+                        </div>
+                        <span class="card-hint">click for details</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-card" data-modal="sysnav-modal">
+                        <div class="timeline-header">
+                            <h3 class="timeline-title">Research Intern</h3>
+                            <span class="timeline-date">Aug 2020 — Mar 2021</span>
+                        </div>
+                        <p class="timeline-company">SYSNAV</p>
+                        <p class="timeline-location">Vernon, Normandie, France</p>
+                        <p class="timeline-description">
+                            Autonomous Cars: Applied Mathematics, Algorithmics and Data Analysis.
+                        </p>
+                        <div class="timeline-tags">
+                            <span class="timeline-tag">Autonomous Vehicles</span>
+                            <span class="timeline-tag">Applied Mathematics</span>
+                            <span class="timeline-tag">Algorithms</span>
+                        </div>
+                        <span class="card-hint">click for details</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-card" data-modal="lfv-modal">
+                        <div class="timeline-header">
+                            <h3 class="timeline-title">Research Student</h3>
+                            <span class="timeline-date">Mar 2020 — Apr 2020</span>
+                        </div>
+                        <p class="timeline-company">LFV (Swedish Air Navigation Services)</p>
+                        <p class="timeline-location">Gif-sur-Yvette, France</p>
+                        <p class="timeline-description">
+                            Air Traffic Flow Management Problem Formulation. Implementing structured 
+                            code and developing heuristics for traffic flow optimization.
+                        </p>
+                        <div class="timeline-tags">
+                            <span class="timeline-tag">Optimization</span>
+                            <span class="timeline-tag">Heuristics</span>
+                            <span class="timeline-tag">Operations Research</span>
+                        </div>
+                        <span class="card-hint">click for details</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section id="education">
+            <div class="section-header">
+                <h2>education</h2>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-card" data-modal="centralesupelec-modal">
+                        <div class="timeline-header">
+                            <h3 class="timeline-title">MSc Applied Mathematics, Data Science</h3>
+                            <span class="timeline-date">2018 — 2022</span>
+                        </div>
+                        <p class="timeline-company">CentraleSupélec — Paris-Saclay University</p>
+                        <p class="timeline-location">Paris, France</p>
+                        <p class="timeline-description">
+                            Top 2 French engineering school, part of Paris-Saclay University. 
+                            Final year in MDS Paris-Saclay track (Sciences des Données et de l'Information) — 
+                            at the intersection of mathematics and computer science.
+                        </p>
+                        <div class="timeline-tags">
+                            <span class="timeline-tag">Machine Learning</span>
+                            <span class="timeline-tag">Deep Learning</span>
+                            <span class="timeline-tag">NLP</span>
+                            <span class="timeline-tag">Computer Vision</span>
+                        </div>
+                        <span class="card-hint">click for details</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-card" data-modal="prepa-modal">
+                        <div class="timeline-header">
+                            <h3 class="timeline-title">Classes Préparatoires MPSI/MP</h3>
+                            <span class="timeline-date">2015 — 2018</span>
+                        </div>
+                        <p class="timeline-company">Lycée Ibn Abdoun</p>
+                        <p class="timeline-description">
+                            Two-year intensive program in Mathematics and Physics, preparing for 
+                            the highly competitive entrance exams to France's top engineering schools.
+                        </p>
+                        <div class="timeline-tags">
+                            <span class="timeline-tag">Advanced Mathematics</span>
+                            <span class="timeline-tag">Physics</span>
+                            <span class="timeline-tag">Competitive Exams</span>
+                        </div>
+                        <span class="card-hint">click for details</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills">
+            <div class="section-header">
+                <h2>skills</h2>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3>deep_learning</h3>
+                    <div class="skill-list">
+                        <span class="skill-tag">PyTorch</span>
+                        <span class="skill-tag">HuggingFace</span>
+                        <span class="skill-tag">Transformers</span>
+                        <span class="skill-tag">CNNs</span>
+                        <span class="skill-tag">LLMs</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>computer_vision</h3>
+                    <div class="skill-list">
+                        <span class="skill-tag">Document AI</span>
+                        <span class="skill-tag">LayoutLM</span>
+                        <span class="skill-tag">YOLO</span>
+                        <span class="skill-tag">OCR</span>
+                        <span class="skill-tag">Table Extraction</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>nlp</h3>
+                    <div class="skill-list">
+                        <span class="skill-tag">LLMs</span>
+                        <span class="skill-tag">Transformers</span>
+                        <span class="skill-tag">BERT</span>
+                        <span class="skill-tag">GPT</span>
+                        <span class="skill-tag">Text Classification</span>
+                        <span class="skill-tag">Tokenizers</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>data_&_mlops</h3>
+                    <div class="skill-list">
+                        <span class="skill-tag">EDA</span>
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">SQL</span>
+                        <span class="skill-tag">Pandas</span>
+                        <span class="skill-tag">NumPy</span>
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">MLflow</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>mathematics</h3>
+                    <div class="skill-list">
+                        <span class="skill-tag">Optimization</span>
+                        <span class="skill-tag">Statistics</span>
+                        <span class="skill-tag">Probability</span>
+                        <span class="skill-tag">Linear Algebra</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3>research</h3>
+                    <div class="skill-list">
+                        <span class="skill-tag">State-of-the-art Implementation</span>
+                        <span class="skill-tag">Model Fine-tuning</span>
+                        <span class="skill-tag">Technical Writing</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects">
+            <div class="section-header">
+                <h2>projects</h2>
+            </div>
+            <div class="projects-list">
+                <!-- TODO: Add your real projects here -->
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3 class="project-title">air-traffic-rerouting</h3>
+                        <div class="project-links">
+                            <a href="https://walidhadri.medium.com" class="project-link" target="_blank">[article]</a>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        Air Traffic Flow Management Rerouting Problem. Developed optimization 
+                        algorithms and heuristics to solve complex traffic flow management 
+                        problems for air navigation services.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Optimization</span>
+                        <span class="tech-tag">Heuristics</span>
+                        <span class="tech-tag">Operations Research</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3 class="project-title">autonomous-navigation</h3>
+                        <div class="project-links">
+                            <a href="#" class="project-link">[details]</a>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        Research on self-driving cars at SYSNAV. Applied mathematics, algorithmics 
+                        and data analysis for autonomous vehicle navigation systems.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Applied Mathematics</span>
+                        <span class="tech-tag">Sensor Fusion</span>
+                        <span class="tech-tag">Algorithms</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3 class="project-title">ml-tutorials</h3>
+                        <div class="project-links">
+                            <a href="https://walidhadri.medium.com" class="project-link" target="_blank">[medium]</a>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        Series of technical articles on Machine Learning fundamentals. 
+                        Covering supervised learning, bias-variance tradeoff, KNN algorithms, 
+                        and the distinctions between ML, Data Science, and AI.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Technical Writing</span>
+                        <span class="tech-tag">Machine Learning</span>
+                        <span class="tech-tag">Education</span>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-header">
+                        <h3 class="project-title">vehicle-residual-value</h3>
+                        <div class="project-links">
+                            <a href="#" class="project-link">[details]</a>
+                        </div>
+                    </div>
+                    <p class="project-description">
+                        Predictive model for estimating residual value of vehicles after 
+                        leasing contracts. Built during internship at Arval BNP Paribas Group.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Python</span>
+                        <span class="tech-tag">Predictive Modeling</span>
+                        <span class="tech-tag">Finance</span>
+                        <span class="tech-tag">Regression</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Experience Modals -->
+    <div class="modal-overlay" id="upskills-modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div class="modal-header">
+                <h3>Machine Learning Engineer & R&D</h3>
+                <span class="modal-company">Upskills</span>
+                <span class="modal-date">Jan 2023 — Present</span>
+            </div>
+            <div class="modal-body">
+                <h4>Document AI Pipeline — End-to-End Intelligent Document Processing</h4>
+                <p>Built a comprehensive document understanding engine that transforms raw documents into clean, structured data optimized for LLM consumption.</p>
+                
+                <div class="modal-section">
+                    <h5>OCR Engine</h5>
+                    <p>Combined and fine-tuned state-of-the-art models (TrOCR, PaddleOCR, EasyOCR) with flexible detection/recognition pipelines and custom model training capabilities.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Table Detection</h5>
+                    <p>Implemented SOTA models (DETR, DiT, TableNet) alongside custom models trained on proprietary data for domain-specific accuracy.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Layout Understanding</h5>
+                    <p>Leveraged transformer-based models including LayoutLMv3, DocFormer, DiT, and Donut for document structure analysis.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Table Structure Recognition</h5>
+                    <p>Developed solution for complex tables with spanning cells using TableTransformer, plus a novel in-house approach that outperformed SOTA in both training efficiency and accuracy.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Entity Linking & Reading Order</h5>
+                    <p>Built layout-aware entity extraction and logical reading order detection for coherent document reconstruction.</p>
+                </div>
+
+                <div class="modal-section">
+                    <h5>Technical Leadership</h5>
+                    <p>Managed and advised a team of interns and junior ML engineers from a technical perspective — guiding debugging sessions, strategic decisions, and architectural choices. Served as the key decision-maker, leveraging deep knowledge of state-of-the-art research and latest developments to steer the team and support management.</p>
+                </div>
+                
+                <div class="modal-impact">
+                    <strong>Impact:</strong> Delivers structured, clean document outputs that significantly reduce LLM hallucinations and enable reliable downstream processing.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="credit-agricole-modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div class="modal-header">
+                <h3>AI Research Scientist</h3>
+                <span class="modal-company">Groupe Crédit Agricole — DataLab</span>
+                <span class="modal-date">May 2022 — Nov 2022</span>
+            </div>
+            <div class="modal-body">
+                <h4>Research Focus: Label Quality in Machine Learning</h4>
+                <p>Conducted research on two critical challenges in real-world ML systems where label quality directly impacts model performance.</p>
+                
+                <div class="modal-section">
+                    <h5>Noisy Labels</h5>
+                    <p>Investigated scenarios where training labels contain errors or inaccuracies — a common issue with real-world proprietary data. Developed mathematical frameworks and methods to detect, quantify, and mitigate the impact of label noise during training, enabling robust model performance even with imperfect annotations.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Subjective Labels</h5>
+                    <p>Addressed the challenge of inter-annotator disagreement — when multiple labelers provide conflicting labels for the same instance. Developed approaches to model annotator uncertainty, leverage disagreement as signal, and build classifiers that account for inherent subjectivity in the labeling process.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Key Contributions</h5>
+                    <p>Co-authored two internal research papers with rigorous mathematical foundations. Designed a unified framework applicable to both deep learning models and classical ML algorithms. Delivered practical methods with direct application to the bank's proprietary datasets.</p>
+                </div>
+                
+                <div class="modal-impact">
+                    <strong>Impact:</strong> Enabled reliable model training on real-world banking data where perfect labels are often unavailable, improving classification robustness across multiple internal applications.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="arval-modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div class="modal-header">
+                <h3>Quantitative Analyst</h3>
+                <span class="modal-company">Arval BNP Paribas Group</span>
+                <span class="modal-date">Mar 2021 — Aug 2021</span>
+            </div>
+            <div class="modal-body">
+                <h4>Residual Value Prediction for Vehicle Leasing</h4>
+                <p>Developed regression models to predict the residual value of vehicles at the end of leasing contracts — a critical metric for pricing and risk management.</p>
+                
+                <div class="modal-section">
+                    <h5>Model Development</h5>
+                    <p>Built a complex regression model incorporating multiple vehicle characteristics: age, mileage, car type, brand, fuel type, and market conditions. Engineered features to capture depreciation patterns across different vehicle segments.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>International Deployment</h5>
+                    <p>Created prediction formulas for Arval Greece and Arval Spain, adapting the core model to local market characteristics. Designed a mapping/remapping architecture that allowed country-specific factors to feed into the main model during training while preserving local market dynamics.</p>
+                </div>
+                
+                <div class="modal-impact">
+                    <strong>Impact:</strong> Enabled accurate residual value forecasting across multiple European markets, supporting leasing pricing decisions and portfolio risk assessment.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="sysnav-modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div class="modal-header">
+                <h3>Research Intern</h3>
+                <span class="modal-company">SYSNAV</span>
+                <span class="modal-date">Aug 2020 — Mar 2021</span>
+            </div>
+            <div class="modal-body">
+                <h4>Cartographic Correction for Autonomous Vehicles</h4>
+                <p>Developed algorithms to detect and correct map errors in autonomous vehicle navigation systems — a critical challenge where vehicles rely on commercial maps (TomTom, etc.) for positioning and driving adjustments.</p>
+                
+                <div class="modal-section">
+                    <h5>Problem Context</h5>
+                    <p>Autonomous vehicles project sensor data onto reference maps for localization and path planning. However, these maps contain errors that can cause navigation failures. The challenge: distinguishing map errors from sensor errors, and identifying which errors are systematic vs. transient.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Algorithm Development</h5>
+                    <p>Designed a prior correction approach that identifies and incorporates map errors into the navigation algorithm. Built methods to detect discrepancies between expected and observed vehicle positioning, attribute errors to the correct source (map vs. sensors), isolate systematic errors from random noise, and account for real-world confounding factors (weather, road conditions, sensor drift).</p>
+                </div>
+                
+                <div class="modal-impact">
+                    <strong>Impact:</strong> Improved autonomous navigation reliability by enabling vehicles to anticipate and compensate for known map inaccuracies, reducing localization errors in real-world driving conditions.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="lfv-modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div class="modal-header">
+                <h3>Research Student</h3>
+                <span class="modal-company">LFV (Swedish Air Navigation Services)</span>
+                <span class="modal-date">Mar 2020 — Apr 2020</span>
+            </div>
+            <div class="modal-body">
+                <h4>Air Traffic Flow Management Rerouting Problem (TFMRP)</h4>
+                <p>Worked with LFV, the Swedish state company regulating aviation, on the Demand and Capacity Balancing (DCB) problem — a critical challenge where airport demand has increased 50%+ while capacity stagnates, costing U.S. airlines alone an estimated $3 billion annually in delays.</p>
+                
+                <div class="modal-section">
+                    <h5>Problem Evolution</h5>
+                    <p>The TFMRP builds on decades of research: from Single-Airport Ground-Holding (SAGHP), to Multi-Airport Ground-Holding, to full Air Traffic Flow Management with speed adjustments and airspace capacity constraints — finally adding flight rerouting capabilities for dynamic capacity fluctuations.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Key Challenges Addressed</h5>
+                    <p>Airborne delays cost significantly more than ground delays (fuel, safety). Airport capacity is highly weather-dependent (can drop 50% in bad conditions). Optimized ground-holds vs. airborne delays as weather forecasts evolve, implementing rerouting decisions under dynamic capacity constraints.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Deliverables</h5>
+                    <p>Developed heuristics and structured code to solve the TFMRP, formulating the problem mathematically and implementing optimization approaches for real-world air traffic scenarios.</p>
+                </div>
+                
+                <div class="modal-impact">
+                    <strong>Impact:</strong> Contributed optimization methods for real-world air traffic management, balancing efficiency and safety in congested airspace.
+                    <br><br>
+                    <a href="https://walidhadri.medium.com/the-air-traffic-flow-management-rerouting-problem-534fbcc3e977" target="_blank" class="modal-link">Read the full article on Medium →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="centralesupelec-modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div class="modal-header">
+                <h3>MSc Applied Mathematics, Data Science</h3>
+                <span class="modal-company">CentraleSupélec — Paris-Saclay University</span>
+                <span class="modal-date">2018 — 2022</span>
+            </div>
+            <div class="modal-body">
+                <h4>Data and Information Sciences Track — Paris-Saclay</h4>
+                <p>A program at the intersection of mathematics and computer science, training data scientists with strong mathematical foundations in modern machine learning methods (statistical models, neural networks) and the ability to implement large-scale solutions. Industry partnerships with Google Research, AXA Data Innovation Lab, Orange Labs, PSA Data Factory.</p>
+                
+                <div class="modal-section">
+                    <h5>Deep Learning & Neural Networks</h5>
+                    <p>Deep Learning, Theoretical Principles of Deep Learning, Deep Learning in Practice, Deep Learning for Medical Imaging.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Computer Vision</h5>
+                    <p>Introduction to Computer Vision, Optimization for Computer Vision, Modern Mathematical Morphology.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Machine Learning & Statistics</h5>
+                    <p>High-Dimensional Modeling, Graphical Models: Discrete Inference and Learning, Bayesian Statistics and Applications, Reinforcement Learning, Advanced Multivariate Data Analysis.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>NLP & Networks</h5>
+                    <p>Natural Language Processing, Machine Learning for Network Science.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Optimization & Big Data</h5>
+                    <p>Foundations of Distributed and Large-Scale Optimization, Data Visualization, MDS Capstone Project.</p>
+                </div>
+                
+                <div class="modal-impact">
+                    <strong>Distinction:</strong> Top 2 French engineering school, ranked #1 worldwide in Mathematics (Shanghai Ranking) as part of Université Paris-Saclay.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="prepa-modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div class="modal-header">
+                <h3>Classes Préparatoires MPSI/MP</h3>
+                <span class="modal-company">Lycée Ibn Abdoun</span>
+                <span class="modal-date">2015 — 2018</span>
+            </div>
+            <div class="modal-body">
+                <h4>Intensive Preparation for Elite Engineering Schools</h4>
+                <p>The CPGE (Classes Préparatoires aux Grandes Écoles) is a highly demanding two-year program that prepares students for the competitive entrance exams to France's most prestigious engineering schools (Polytechnique, ENS, CentraleSupélec, Mines-Ponts). The MP track is the most mathematics-intensive, with 12 hours of math and 9 hours of physics per week.</p>
+                
+                <div class="modal-section">
+                    <h5>Mathematics (12h/week)</h5>
+                    <p>Linear Algebra, Abstract Algebra (Groups, Rings, Fields), Real & Complex Analysis, Topology, Differential Equations, Probability Theory, Numerical Methods.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Physics (7h/week)</h5>
+                    <p>Classical Mechanics, Electromagnetism, Thermodynamics, Optics, Quantum Mechanics fundamentals, Wave Theory.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Computer Science & Engineering</h5>
+                    <p>Algorithms, Data Structures, Recursion, Graph Theory, Automata, Programming (Python/OCaml).</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Humanities</h5>
+                    <p>French Literature & Philosophy, Foreign Languages (English), developing critical thinking and communication skills essential for future engineers.</p>
+                </div>
+                
+                <div class="modal-section">
+                    <h5>Evaluation System</h5>
+                    <p>Weekly oral examinations (colles/khôlles), written exams, and continuous assessment. The workload is exceptionally high — students are often called "taupins" (moles) for their intensive study lifestyle.</p>
+                </div>
+                
+                <div class="modal-impact">
+                    <strong>Selectivity:</strong> National competitive exams (Concours) with acceptance rates as low as 5-10% for top schools. The MP track offers the most seats at prestigious schools like Polytechnique, ENS, and CentraleSupélec.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p class="footer-text">
+            Built with raw HTML/CSS — no frameworks, no dependencies
+        </p>
+        <p class="footer-prompt">$ echo "Let's connect"</p>
+    </footer>
+
+    <!-- ML/AI background rain effect script -->
+    <script>
+        const matrix = document.getElementById('matrix');
+        const mlTerms = [
+            '∇L(θ)', '∂f/∂x', 'Σ', '∫', 'argmin', 'argmax', 'softmax', 'σ(x)', 'ReLU', 'tanh',
+            '∞', '→', '≈', '∈', '∀', '∃', 'λ', 'α', 'β', 'γ', 'θ', 'μ', '∂', 'Δ', '∏', '√',
+            'log', 'exp', 'P(x|y)', 'E[X]', 'Var(X)', '∇²', 'xᵀWx', '||x||₂', 'O(n²)',
+            'f(x)=Wx+b', 'ŷ=σ(Wx+b)', 'H(p,q)', 'D_KL(P||Q)', 'MSE', 'MAE', 'BCE',
+            'CrossEntropy', 'L1', 'L2', 'KL-divergence', 'Huber', 'Hinge', 'Focal', 'Dice',
+            'IoU_loss', 'Triplet', 'Contrastive', 'InfoNCE', 'CLIP_loss', 'SGD', 'Adam',
+            'AdamW', 'RMSprop', 'momentum', 'lr=0.001', 'lr=3e-4', 'batch_size=32',
+            'epochs=100', 'weight_decay', 'grad_clip', 'warmup', 'cosine_annealing',
+            'OneCycleLR', 'ReduceLROnPlateau', 'LBFGS', 'Adagrad', 'Adadelta', 'NAdam',
+            'LAMB', 'transformer', 'attention', 'self-attention', 'multi-head', 'BERT',
+            'GPT', 'GPT-4', 'LLaMA', 'Claude', 'LLM', 'CNN', 'RNN', 'LSTM', 'GRU', 'GAN',
+            'VAE', 'diffusion', 'DDPM', 'embedding', 'tokenizer', 'fine-tune', 'pre-train',
+            'backprop', 'forward_pass', 'dropout', 'BatchNorm', 'LayerNorm', 'RMSNorm',
+            'skip_connection', 'residual', 'dense_layer', 'feedforward', 'MLP',
+            'autoencoder', 'latent_space', 'encoder', 'decoder', 'bottleneck',
+            'feature_map', 'activation', 'gradient', 'chain_rule', 'Xavier_init',
+            'He_init', 'frozen_layers', 'LoRA', 'QLoRA', 'PEFT', 'adapter', 'NLP', 'NER',
+            'POS', 'seq2seq', 'BLEU', 'ROUGE', 'perplexity', 'cosine_sim', 'TF-IDF',
+            'word2vec', 'GloVe', 'FastText', 'BPE', 'SentencePiece', 'tokenize',
+            'vocab_size', 'context_window', 'causal_mask', 'padding', '[CLS]', '[SEP]',
+            '[MASK]', 'RAG', 'retrieval', 'chunking', 'semantic_search', 'vector_db',
+            'FAISS', 'prompt', 'zero-shot', 'few-shot', 'CoT', 'instruction_tuning',
+            'RLHF', 'DPO', 'SFT', 'ResNet', 'VGG', 'YOLO', 'YOLOv8', 'ViT', 'CLIP',
+            'DINO', 'SAM', 'convolution', 'pooling', 'max_pool', 'avg_pool', 'stride',
+            'kernel', '3x3', 'IoU', 'mAP', 'precision', 'recall', 'F1', 'bounding_box',
+            'segmentation', 'detection', 'classification', 'augmentation', 'flip',
+            'rotate', 'crop', 'normalize', 'ImageNet', 'COCO', 'model.train()',
+            'model.eval()', 'loss.backward()', 'optimizer.step()', 'optimizer.zero_grad()',
+            'torch.tensor', 'torch.no_grad()', 'np.array', 'fit()', 'predict()',
+            'transform()', '.cuda()', '.to(device)', 'DataLoader', 'Dataset', 'nn.Module',
+            'forward()', '__init__()', 'pip install', 'import torch', 'import numpy as np',
+            'from transformers import', 'model.save()', 'model.load()', 'checkpoint',
+            'wandb.log()', 'tqdm', 'shuffle=True', 'accuracy', 'precision', 'recall',
+            'F1-score', 'AUC-ROC', 'confusion_matrix', 'TP', 'FP', 'TN', 'FN', 'R²',
+            'RMSE', 'MAE', 'log_loss', 'top-k', 'MRR', 'NDCG', 'hit_rate', 'Bayes',
+            'P(A|B)', 'likelihood', 'posterior', 'prior', 'MLE', 'MAP', 'Gaussian',
+            'N(0,1)', 'μ=0', 'σ²', 'covariance', 'correlation', 'PCA', 'SVD',
+            'eigenvalue', 'eigenvector', 'Jacobian', 'Hessian', 'convex', 'non-convex',
+            'global_min', 'local_min', 'saddle_point'
+        ];
+
+        const layers = [
+            { class: 'layer-back', count: 60, speedMin: 60, speedMax: 100 },
+            { class: 'layer-mid', count: 40, speedMin: 45, speedMax: 75 },
+            { class: 'layer-front', count: 25, speedMin: 35, speedMax: 55 }
+        ];
+
+        layers.forEach(layer => {
+            for (let i = 0; i < layer.count; i++) {
+                const term = document.createElement('div');
+                term.className = `ml-term ${layer.class}`;
+                term.textContent = mlTerms[Math.floor(Math.random() * mlTerms.length)];
+                
+                // Random horizontal position across full width
+                term.style.left = `${Math.random() * 100}%`;
+                
+                // Random animation duration (speed)
+                const duration = layer.speedMin + Math.random() * (layer.speedMax - layer.speedMin);
+                term.style.animationDuration = `${duration}s`;
+                
+                // Random start delay (stagger the terms)
+                term.style.animationDelay = `${-Math.random() * duration}s`;
+                
+                matrix.appendChild(term);
+            }
+        });
+
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Modal functionality - click to open
+        const timelineCards = document.querySelectorAll('.timeline-card[data-modal]');
+        const modals = document.querySelectorAll('.modal-overlay');
+        
+        timelineCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const modalId = card.getAttribute('data-modal');
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            });
+        });
+
+        modals.forEach(modal => {
+            // Close on overlay click
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+
+            // Close on X button
+            const closeBtn = modal.querySelector('.modal-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', () => {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                modals.forEach(modal => {
+                    modal.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>
