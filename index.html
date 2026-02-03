@@ -6,7 +6,7 @@
     <title>Walid Hadri — ML Engineer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-primary: #0a0a0f;
@@ -28,16 +28,13 @@
             box-sizing: border-box;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
             font-family: 'JetBrains Mono', monospace;
             background: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.7;
+            line-height: 1.6;
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
         /* Scanline overlay */
@@ -79,132 +76,41 @@
             animation: float-down linear infinite;
         }
 
-        .ml-term.layer-back {
-            font-size: 10px;
-            opacity: 0.03;
-        }
-
-        .ml-term.layer-mid {
-            font-size: 12px;
-            opacity: 0.06;
-        }
-
-        .ml-term.layer-front {
-            font-size: 14px;
-            opacity: 0.1;
-        }
+        .ml-term.layer-back { font-size: 10px; opacity: 0.03; }
+        .ml-term.layer-mid { font-size: 12px; opacity: 0.06; }
+        .ml-term.layer-front { font-size: 14px; opacity: 0.1; }
 
         @keyframes float-down {
-            0% {
-                transform: translateY(-100px);
-            }
-            100% {
-                transform: translateY(calc(100vh + 100px));
-            }
+            0% { transform: translateY(-100px); }
+            100% { transform: translateY(calc(100vh + 100px)); }
         }
 
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 1rem 2rem;
-            background: linear-gradient(to bottom, var(--bg-primary), transparent);
-            backdrop-filter: blur(10px);
-        }
-
-        .nav-content {
-            max-width: 1200px;
+        /* Main layout */
+        .container {
+            max-width: 1400px;
             margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .nav-logo {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--accent);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .nav-logo::before {
-            content: '>';
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0; }
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.85rem;
-            transition: color 0.3s, text-shadow 0.3s;
-            position: relative;
-        }
-
-        .nav-links a::before {
-            content: './';
-            color: var(--text-muted);
-        }
-
-        .nav-links a:hover {
-            color: var(--accent);
-            text-shadow: var(--glow);
-        }
-
-        /* Main content */
-        main {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        section {
-            margin-bottom: 4rem;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Hero section */
-        .hero {
+            padding: 1rem;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            padding-top: 4rem;
-            position: relative;
         }
 
-        .terminal-window {
+        /* Header */
+        .header {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            padding: 1.5rem 2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
             position: relative;
         }
 
-        .terminal-window::before,
-        .terminal-window::after {
+        .header::before {
             content: '';
             position: absolute;
             top: 0;
@@ -215,175 +121,57 @@
             opacity: 0;
         }
 
-        .terminal-window::before {
+        .header::before {
             background: linear-gradient(90deg, transparent, rgba(0, 255, 157, 0.03), transparent);
             animation: glitch-scan 4s linear infinite;
         }
 
-        .terminal-window::after {
-            background: rgba(0, 255, 157, 0.02);
-            animation: glitch-flash 8s infinite;
-        }
-
         @keyframes glitch-scan {
-            0% {
-                transform: translateX(-100%);
-                opacity: 0;
-            }
-            50% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateX(100%);
-                opacity: 0;
-            }
+            0% { transform: translateX(-100%); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateX(100%); opacity: 0; }
         }
 
-        @keyframes glitch-flash {
-            0%, 90%, 92%, 94%, 96%, 100% {
-                opacity: 0;
-            }
-            91%, 93%, 95% {
-                opacity: 1;
-            }
-        }
-
-        .terminal-header {
-            background: var(--bg-tertiary);
-            padding: 0.75rem 1rem;
+        .header-left {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .terminal-btn {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-        }
-
-        .terminal-btn.red { background: #ff5f56; }
-        .terminal-btn.yellow { background: #ffbd2e; }
-        .terminal-btn.green { background: #27ca40; }
-
-        .terminal-title {
-            margin-left: auto;
-            margin-right: auto;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .terminal-body {
-            padding: 2rem;
-        }
-
-        .command-line {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-        .prompt {
-            color: var(--accent);
-            margin-right: 0.75rem;
-            user-select: none;
-        }
-
-        .command {
-            color: var(--text-primary);
-        }
-
-        .output {
-            padding-left: 0;
-            margin-top: 1.5rem;
-        }
-
-        .hero-name {
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 0.5rem;
-            line-height: 1.2;
-        }
-
-        .hero-name .highlight {
-            color: var(--accent);
-            text-shadow: var(--glow);
-        }
-
-        .hero-title {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-title span {
-            color: var(--accent-secondary);
-        }
-
-        .hero-bio {
-            color: var(--text-secondary);
-            max-width: 600px;
-            font-size: 0.95rem;
-        }
-
-        .hero-links {
-            display: flex;
-            gap: 1.5rem;
-            margin-top: 2rem;
+            gap: 2rem;
             flex-wrap: wrap;
         }
 
-        .status-banner {
-            display: none;
+        .header-info h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
         }
 
-        .hero-status {
-            margin-top: 2rem;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
+        .header-info h1 span {
+            color: var(--accent);
         }
 
-        .scroll-indicator {
-            position: absolute;
-            bottom: 4rem;
-            left: 50%;
-            transform: translateX(-50%);
+        .header-info .title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .header-info .title span {
+            color: var(--accent);
+        }
+
+        .header-status {
             display: flex;
-            flex-direction: column;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
         }
 
-        .scroll-arrow {
-            font-size: 2.5rem;
-            color: var(--accent);
-            animation: bounce 2s ease-in-out infinite;
-            text-shadow: var(--glow);
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(12px);
-            }
-            60% {
-                transform: translateY(6px);
-            }
-        }
-
-        .status-indicator {
+        .status-dot {
             width: 8px;
             height: 8px;
             background: var(--accent);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent);
             animation: pulse 2s ease-in-out infinite;
         }
 
@@ -392,135 +180,49 @@
             50% { opacity: 0.5; box-shadow: 0 0 5px var(--accent); }
         }
 
-        .hero-link {
+        .header-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .header-link {
             color: var(--text-secondary);
             text-decoration: none;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            padding: 0.4rem 0.8rem;
             border: 1px solid var(--border);
             border-radius: 4px;
             transition: all 0.3s;
         }
 
-        .hero-link:hover {
-            color: var(--accent);
+        .header-link:hover {
             border-color: var(--accent);
-            box-shadow: var(--glow);
-            transform: translateY(-2px);
-        }
-
-        /* Section headers */
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 2.5rem;
-        }
-
-        .section-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .section-header h2::before {
-            content: '# ';
             color: var(--accent);
         }
 
-        .section-header::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(to right, var(--border), transparent);
-        }
-
-        /* About section */
-        .about-content {
+        /* Main grid */
+        .main-grid {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-        }
-
-        @media (min-width: 768px) {
-            .about-content {
-                grid-template-columns: 2fr 1fr;
-            }
-        }
-
-        .about-text {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 2rem;
-        }
-
-        .about-text p {
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-        }
-
-        .about-text p:last-child {
-            margin-bottom: 0;
-        }
-
-        .about-stats {
-            display: flex;
-            flex-direction: column;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
             gap: 1rem;
+            flex: 1;
         }
 
-        .stat-card {
+        /* Section base styles */
+        .section {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
             border-radius: 8px;
             padding: 1.25rem;
-            text-align: center;
+            overflow: hidden;
         }
 
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--accent);
-            text-shadow: var(--glow);
-        }
-
-        .stat-value.small {
-            font-size: 1.2rem;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-        }
-
-        /* Skills section */
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .skill-category {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.5rem;
-            transition: all 0.3s;
-        }
-
-        .skill-category:hover {
-            border-color: var(--accent-dim);
-            transform: translateY(-4px);
-        }
-
-        .skill-category h3 {
-            font-size: 0.9rem;
+        .section-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             color: var(--accent);
             margin-bottom: 1rem;
             display: flex;
@@ -528,244 +230,276 @@
             gap: 0.5rem;
         }
 
-        .skill-category h3::before {
-            content: '>';
+        .section-title::before {
+            content: '#';
+            opacity: 0.5;
+        }
+
+        /* About section */
+        .about-section {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        .about-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .about-text {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .about-text p {
+            margin-bottom: 0.75rem;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+
+        .stat-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* Skills section */
+        .skills-section {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+        }
+
+        .skill-category h4 {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+        }
+
+        .skill-category h4::before {
+            content: '~/';
             color: var(--text-muted);
         }
 
         .skill-list {
             display: flex;
             flex-wrap: wrap;
-            gap: 0.5rem;
+            gap: 0.3rem;
         }
 
         .skill-tag {
-            background: var(--bg-tertiary);
-            color: var(--text-secondary);
-            padding: 0.35rem 0.75rem;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            border: 1px solid transparent;
-            transition: all 0.3s;
-        }
-
-        .skill-tag:hover {
-            border-color: var(--accent);
+            font-size: 0.6rem;
             color: var(--accent);
+            background: var(--accent-dim);
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
         }
 
-        /* Experience & Education Timeline */
+        /* Experience section */
+        .experience-section {
+            grid-column: 1;
+            grid-row: 2;
+        }
+
         .timeline {
-            position: relative;
-            padding-left: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
-        .timeline::before {
+        .timeline-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .timeline-item:hover {
+            border-color: var(--accent-dim);
+        }
+
+        .timeline-item.current::before {
             content: '';
             position: absolute;
             left: 0;
             top: 0;
             bottom: 0;
-            width: 2px;
-            background: linear-gradient(to bottom, var(--accent), var(--border));
-        }
-
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-            padding-left: 1.5rem;
-        }
-
-        .timeline-item:last-child {
-            margin-bottom: 0;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -2rem;
-            top: 0.5rem;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--bg-primary);
-            border: 2px solid var(--accent);
-            box-shadow: var(--glow);
-        }
-
-        .timeline-item.current::before {
+            width: 3px;
             background: var(--accent);
-        }
-
-        .timeline-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.5rem;
-            transition: all 0.3s;
-        }
-
-        .timeline-card:hover {
-            border-color: var(--accent-dim);
-            transform: translateX(8px);
+            border-radius: 3px 0 0 3px;
         }
 
         .timeline-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 0.75rem;
-            flex-wrap: wrap;
             gap: 0.5rem;
+            margin-bottom: 0.25rem;
         }
 
-        .timeline-title {
-            font-size: 1.1rem;
+        .timeline-role {
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--text-primary);
         }
 
         .timeline-date {
-            font-size: 0.8rem;
-            color: var(--accent);
-            background: var(--accent-dim);
-            padding: 0.25rem 0.6rem;
-            border-radius: 3px;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            white-space: nowrap;
         }
 
         .timeline-company {
-            font-size: 0.9rem;
-            color: var(--accent-secondary);
-            margin-bottom: 0.5rem;
+            font-size: 0.7rem;
+            color: var(--accent);
         }
 
-        .timeline-location {
-            font-size: 0.8rem;
+        .timeline-hint {
+            font-size: 0.55rem;
             color: var(--text-muted);
-            margin-bottom: 0.75rem;
+            font-style: italic;
+            margin-top: 0.25rem;
         }
 
-        .timeline-description {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-        }
-
-        .timeline-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .timeline-tag {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            background: var(--bg-tertiary);
-            padding: 0.2rem 0.5rem;
-            border-radius: 3px;
-        }
-
-        /* Projects section */
-        .projects-list {
+        /* Right column - Education + Projects stacked */
+        .right-stack {
+            grid-column: 2;
+            grid-row: 2;
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .project-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.5rem;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 3px;
-            height: 100%;
-            background: var(--accent);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .project-card:hover {
-            border-color: var(--accent-dim);
-            transform: translateX(8px);
-        }
-
-        .project-card:hover::before {
-            opacity: 1;
-        }
-
-        .project-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
             gap: 1rem;
         }
 
-        .project-title {
-            font-size: 1.1rem;
+        /* Education section */
+        .education-section {
+            flex: 0 0 auto;
+        }
+
+        .education-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .education-item {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .education-item:hover {
+            border-color: var(--accent-dim);
+        }
+
+        .education-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .education-degree {
+            font-size: 0.75rem;
             font-weight: 600;
             color: var(--text-primary);
         }
 
-        .project-title::before {
-            content: '~/projects/';
+        .education-date {
+            font-size: 0.6rem;
             color: var(--text-muted);
-            font-weight: 400;
         }
 
-        .project-links {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .project-link {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: color 0.3s;
-        }
-
-        .project-link:hover {
+        .education-school {
+            font-size: 0.7rem;
             color: var(--accent);
         }
 
-        .project-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
+        .education-hint {
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 0.25rem;
         }
 
-        .project-tech {
-            display: flex;
-            flex-wrap: wrap;
+        /* Projects section */
+        .projects-section {
+            flex: 1;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 0.5rem;
         }
 
-        .tech-tag {
-            font-size: 0.75rem;
-            color: var(--accent);
-            background: var(--accent-dim);
-            padding: 0.25rem 0.6rem;
-            border-radius: 3px;
+        .project-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.6rem;
+            transition: all 0.3s;
         }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 3rem 2rem;
-            border-top: 1px solid var(--border);
-            margin-top: 4rem;
+        .project-card:hover {
+            border-color: var(--accent-dim);
+        }
+
+        .project-name {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .project-name::before {
+            content: '~/';
+            color: var(--text-muted);
+        }
+
+        .project-desc {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .project-link {
+            font-size: 0.55rem;
+            color: var(--accent);
+            text-decoration: none;
+            margin-top: 0.3rem;
+            display: inline-block;
         }
 
         /* Modal styles */
@@ -795,10 +529,10 @@
             background: var(--bg-secondary);
             border: 1px solid var(--accent);
             border-radius: 12px;
-            max-width: 700px;
-            max-height: 85vh;
+            max-width: 600px;
+            max-height: 80vh;
             overflow-y: auto;
-            padding: 2rem;
+            padding: 1.5rem;
             position: relative;
             box-shadow: 0 0 40px rgba(0, 255, 157, 0.2);
             transform: scale(0.9);
@@ -816,7 +550,7 @@
             background: none;
             border: none;
             color: var(--text-muted);
-            font-size: 2rem;
+            font-size: 1.5rem;
             cursor: pointer;
             transition: color 0.3s;
             line-height: 1;
@@ -827,66 +561,66 @@
         }
 
         .modal-header {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
             border-bottom: 1px solid var(--border);
         }
 
         .modal-header h3 {
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             color: var(--text-primary);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
         }
 
         .modal-company {
             color: var(--accent);
-            font-size: 1rem;
+            font-size: 0.9rem;
             display: block;
             margin-bottom: 0.25rem;
         }
 
         .modal-date {
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.75rem;
         }
 
         .modal-body h4 {
             color: var(--accent-secondary);
-            font-size: 1.1rem;
-            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
         }
 
         .modal-body > p {
             color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
         }
 
         .modal-section {
-            margin-bottom: 1.25rem;
-            padding-left: 1rem;
+            margin-bottom: 1rem;
+            padding-left: 0.75rem;
             border-left: 2px solid var(--accent-dim);
         }
 
         .modal-section h5 {
             color: var(--accent);
-            font-size: 0.95rem;
-            margin-bottom: 0.5rem;
+            font-size: 0.85rem;
+            margin-bottom: 0.4rem;
         }
 
         .modal-section p {
             color: var(--text-secondary);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             line-height: 1.6;
         }
 
         .modal-impact {
-            margin-top: 1.5rem;
-            padding: 1rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
             background: var(--accent-dim);
             border-radius: 6px;
             color: var(--text-primary);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
 
         .modal-impact strong {
@@ -906,111 +640,9 @@
             text-decoration: underline;
         }
 
-        .card-hint {
-            display: block;
-            margin-top: 1rem;
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-style: italic;
-        }
-
-        .timeline-card[data-modal] {
-            cursor: pointer;
-        }
-
-        .timeline-card[data-modal]:hover .card-hint {
-            color: var(--accent);
-        }
-
-        /* Modal scrollbar */
-        .modal-content::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .modal-content::-webkit-scrollbar-track {
-            background: var(--bg-primary);
-        }
-
-        .modal-content::-webkit-scrollbar-thumb {
-            background: var(--border);
-            border-radius: 3px;
-        }
-
-        .footer-text {
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        .footer-text a {
-            color: var(--accent);
-            text-decoration: none;
-        }
-
-        .footer-prompt {
-            margin-top: 1rem;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
-
-        .footer-prompt::after {
-            content: '█';
-            animation: blink 1s infinite;
-            margin-left: 0.25rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            nav {
-                padding: 1rem;
-            }
-
-            .nav-links {
-                gap: 1rem;
-                font-size: 0.75rem;
-            }
-
-            .nav-links a::before {
-                display: none;
-            }
-
-            main {
-                padding: 1rem;
-            }
-
-            .terminal-body {
-                padding: 1.5rem;
-            }
-
-            .hero-links {
-                flex-direction: column;
-            }
-
-            .hero-link {
-                justify-content: center;
-            }
-
-            .timeline {
-                padding-left: 1.5rem;
-            }
-
-            .timeline-item {
-                padding-left: 1rem;
-            }
-
-            .timeline-item::before {
-                left: -1.5rem;
-            }
-        }
-
-        /* Selection color */
-        ::selection {
-            background: var(--accent);
-            color: var(--bg-primary);
-        }
-
         /* Scrollbar */
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 6px;
         }
 
         ::-webkit-scrollbar-track {
@@ -1019,11 +651,49 @@
 
         ::-webkit-scrollbar-thumb {
             background: var(--border);
-            border-radius: 4px;
+            border-radius: 3px;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-dim);
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-section,
+            .skills-section,
+            .experience-section,
+            .right-stack {
+                grid-column: 1;
+            }
+
+            .about-section { grid-row: 1; }
+            .skills-section { grid-row: 2; }
+            .experience-section { grid-row: 3; }
+            .right-stack { grid-row: 4; }
+        }
+
+        /* Email Toast */
+        .email-toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            z-index: 3000;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+        }
+
+        .email-toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
     </style>
 </head>
@@ -1031,435 +701,232 @@
     <!-- Matrix background -->
     <div class="matrix-bg" id="matrix"></div>
 
-    <!-- Navigation -->
-    <nav>
-        <div class="nav-content">
-            <a href="#" class="nav-logo">walid_hadri</a>
-            <ul class="nav-links">
-                <li><a href="#about">about</a></li>
-                <li><a href="#experience">experience</a></li>
-                <li><a href="#education">education</a></li>
-                <li><a href="#skills">skills</a></li>
-                <li><a href="#projects">projects</a></li>
-            </ul>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="header-info">
+                    <h1>Walid <span>Hadri</span></h1>
+                    <p class="title"><span>Machine Learning Engineer</span> & R&D</p>
+                    <div class="header-status">
+                        <span class="status-dot"></span>
+                        walid.exe is currently in front of his PC building something...
+                    </div>
+                </div>
+            </div>
+            <div class="header-links">
+                <a href="#" class="header-link" onclick="copyEmail(event)">📧 email</a>
+                <a href="https://github.com/WalidHadri-Iron" class="header-link" target="_blank">⌘ github</a>
+                <a href="https://linkedin.com/in/walid-hadri-16438b175" class="header-link" target="_blank">◉ linkedin</a>
+                <a href="https://walidhadri.medium.com" class="header-link" target="_blank">✎ medium</a>
+            </div>
+        </header>
+
+        <!-- Email Toast -->
+        <div class="email-toast" id="emailToast">
+            📋 wa.hadri.1@gmail.com copied to clipboard!
         </div>
-    </nav>
 
-    <main>
-        <!-- Hero Section -->
-        <section class="hero" id="home">
-            <div class="terminal-window">
-                <div class="terminal-header">
-                    <span class="terminal-btn red"></span>
-                    <span class="terminal-btn yellow"></span>
-                    <span class="terminal-btn green"></span>
-                    <span class="terminal-title">bash — portfolio</span>
-                </div>
-                <div class="terminal-body">
-                    <div class="command-line">
-                        <span class="prompt">$</span>
-                        <span class="command">whoami</span>
+        <!-- Main Grid -->
+        <main class="main-grid">
+            <!-- About Section -->
+            <section class="section about-section">
+                <h2 class="section-title">about</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p>Machine Learning Engineer with a strong foundation in applied mathematics and data science from CentraleSupélec. I specialize in Document AI and Large Language Models, with a focus on studying and implementing state-of-the-art research.</p>
+                        <p>My journey spans from autonomous vehicles research to quantitative finance to AI R&D. Today, I'm passionate about building LLM-powered agents for real-world automation.</p>
+                        <p>I believe complex ideas deserve simple explanations. I share what I learn through articles and open-source repos.</p>
                     </div>
-                    <div class="output">
-                        <h1 class="hero-name">Walid <span class="highlight">Hadri</span></h1>
-                        <p class="hero-title"><span>Machine Learning Engineer</span> & R&D</p>
-                        <p class="hero-bio">
-                            Building intelligent, scalable state-of-the-art AI models to process real-world data. 
-                            Passionate about making complex AI concepts accessible to both technical and non-technical audiences.
-                        </p>
-                        <div class="hero-links">
-                            <a href="mailto:your@email.com" class="hero-link">
-                                <span>📧</span> email
-                            </a>
-                            <a href="https://github.com/walidhadri" class="hero-link" target="_blank">
-                                <span>⌘</span> github
-                            </a>
-                            <a href="https://linkedin.com/in/walid-hadri-16438b175" class="hero-link" target="_blank">
-                                <span>◉</span> linkedin
-                            </a>
-                            <a href="https://walidhadri.medium.com" class="hero-link" target="_blank">
-                                <span>✎</span> medium
-                            </a>
+                    <div class="about-stats">
+                        <div class="stat-card">
+                            <div class="stat-value">Document AI</div>
+                            <div class="stat-label">specialization</div>
                         </div>
-                        <p class="hero-status">
-                            <span class="status-indicator"></span>
-                            walid.exe is currently in front of his PC building something...
-                        </p>
+                        <div class="stat-card">
+                            <div class="stat-value">LLMs & Agents</div>
+                            <div class="stat-label">current focus</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">CentraleSupélec</div>
+                            <div class="stat-label">alumni</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">Paris</div>
+                            <div class="stat-label">based in</div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            
-            <!-- Scroll indicator -->
-            <div class="scroll-indicator">
-                <span class="scroll-arrow">↓</span>
-            </div>
-        </section>
+            </section>
 
-        <!-- About Section -->
-        <section id="about">
-            <div class="section-header">
-                <h2>about</h2>
-            </div>
-            <div class="about-content">
-                <div class="about-text">
-                    <p>
-                        Machine Learning Engineer with a strong foundation in applied mathematics 
-                        and data science from CentraleSupélec. I specialize in Document AI and 
-                        Large Language Models, with a focus on studying and implementing 
-                        state-of-the-art research.
-                    </p>
-                    <p>
-                        My journey spans from autonomous vehicles research to quantitative finance 
-                        to AI R&D. Today, I'm passionate about building LLM-powered agents for 
-                        real-world automation — from vibe coding and video generation to websites, 
-                        APIs, and task workflows.
-                    </p>
-                    <p>
-                        I believe complex ideas deserve simple explanations. I share what I learn 
-                        through articles and open-source repos, making AI accessible to both 
-                        technical and non-technical audiences.
-                    </p>
+            <!-- Skills Section -->
+            <section class="section skills-section">
+                <h2 class="section-title">skills</h2>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h4>deep_learning</h4>
+                        <div class="skill-list">
+                            <span class="skill-tag">PyTorch</span>
+                            <span class="skill-tag">HuggingFace</span>
+                            <span class="skill-tag">Transformers</span>
+                            <span class="skill-tag">CNNs</span>
+                            <span class="skill-tag">LLMs</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h4>computer_vision</h4>
+                        <div class="skill-list">
+                            <span class="skill-tag">Document AI</span>
+                            <span class="skill-tag">LayoutLM</span>
+                            <span class="skill-tag">YOLO</span>
+                            <span class="skill-tag">OCR</span>
+                            <span class="skill-tag">Table Extraction</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h4>nlp</h4>
+                        <div class="skill-list">
+                            <span class="skill-tag">LLMs</span>
+                            <span class="skill-tag">Transformers</span>
+                            <span class="skill-tag">BERT</span>
+                            <span class="skill-tag">GPT</span>
+                            <span class="skill-tag">Text Classification</span>
+                            <span class="skill-tag">Tokenizers</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h4>data_&_mlops</h4>
+                        <div class="skill-list">
+                            <span class="skill-tag">EDA</span>
+                            <span class="skill-tag">Python</span>
+                            <span class="skill-tag">SQL</span>
+                            <span class="skill-tag">Pandas</span>
+                            <span class="skill-tag">NumPy</span>
+                            <span class="skill-tag">Git</span>
+                            <span class="skill-tag">MLflow</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h4>mathematics</h4>
+                        <div class="skill-list">
+                            <span class="skill-tag">Optimization</span>
+                            <span class="skill-tag">Statistics</span>
+                            <span class="skill-tag">Probability</span>
+                            <span class="skill-tag">Linear Algebra</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h4>research</h4>
+                        <div class="skill-list">
+                            <span class="skill-tag">SOTA Implementation</span>
+                            <span class="skill-tag">Fine-tuning</span>
+                            <span class="skill-tag">Technical Writing</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="about-stats">
-                    <div class="stat-card">
-                        <div class="stat-value small">Document AI</div>
-                        <div class="stat-label">specialization</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value small">LLMs & Agents</div>
-                        <div class="stat-label">current focus</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value small">CentraleSupélec</div>
-                        <div class="stat-label">alumni</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-value small">Paris</div>
-                        <div class="stat-label">based in</div>
-                    </div>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Experience Section -->
-        <section id="experience">
-            <div class="section-header">
-                <h2>experience</h2>
-            </div>
-            <div class="timeline">
-                <div class="timeline-item current">
-                    <div class="timeline-card" data-modal="upskills-modal">
+            <!-- Experience Section -->
+            <section class="section experience-section">
+                <h2 class="section-title">experience</h2>
+                <div class="timeline">
+                    <div class="timeline-item current" data-modal="upskills-modal">
                         <div class="timeline-header">
-                            <h3 class="timeline-title">Machine Learning Engineer & R&D</h3>
+                            <span class="timeline-role">ML Engineer & R&D</span>
                             <span class="timeline-date">Jan 2023 — Present</span>
                         </div>
-                        <p class="timeline-company">Upskills</p>
-                        <p class="timeline-location">Paris, France</p>
-                        <p class="timeline-description">
-                            R&D in Computer Vision and Natural Language Processing. 
-                            Study and implementation of state-of-the-art models and techniques.
-                        </p>
-                        <div class="timeline-tags">
-                            <span class="timeline-tag">Computer Vision</span>
-                            <span class="timeline-tag">NLP</span>
-                            <span class="timeline-tag">Deep Learning</span>
-                            <span class="timeline-tag">R&D</span>
-                        </div>
-                        <span class="card-hint">click for details</span>
+                        <span class="timeline-company">Upskills</span>
+                        <div class="timeline-hint">click for details</div>
                     </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-card" data-modal="credit-agricole-modal">
+                    <div class="timeline-item" data-modal="credit-agricole-modal">
                         <div class="timeline-header">
-                            <h3 class="timeline-title">AI Research Scientist</h3>
-                            <span class="timeline-date">May 2022 — Nov 2022</span>
+                            <span class="timeline-role">AI Research Scientist</span>
+                            <span class="timeline-date">May — Nov 2022</span>
                         </div>
-                        <p class="timeline-company">Groupe Crédit Agricole — DataLab</p>
-                        <p class="timeline-location">Paris, France</p>
-                        <p class="timeline-description">
-                            Intern at the DataLab working on research topics with focus on text classification.
-                        </p>
-                        <div class="timeline-tags">
-                            <span class="timeline-tag">Text Classification</span>
-                            <span class="timeline-tag">NLP</span>
-                            <span class="timeline-tag">Research</span>
-                        </div>
-                        <span class="card-hint">click for details</span>
+                        <span class="timeline-company">Crédit Agricole — DataLab</span>
+                        <div class="timeline-hint">click for details</div>
                     </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-card" data-modal="arval-modal">
+                    <div class="timeline-item" data-modal="arval-modal">
                         <div class="timeline-header">
-                            <h3 class="timeline-title">Quantitative Analyst</h3>
-                            <span class="timeline-date">Mar 2021 — Aug 2021</span>
+                            <span class="timeline-role">Quantitative Analyst</span>
+                            <span class="timeline-date">Mar — Aug 2021</span>
                         </div>
-                        <p class="timeline-company">Arval BNP Paribas Group</p>
-                        <p class="timeline-location">Paris, France</p>
-                        <p class="timeline-description">
-                            Prediction of the residual value of vehicles after a leasing contract.
-                        </p>
-                        <div class="timeline-tags">
-                            <span class="timeline-tag">Predictive Modeling</span>
-                            <span class="timeline-tag">Finance</span>
-                            <span class="timeline-tag">Data Analysis</span>
-                        </div>
-                        <span class="card-hint">click for details</span>
+                        <span class="timeline-company">Arval BNP Paribas</span>
+                        <div class="timeline-hint">click for details</div>
                     </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-card" data-modal="sysnav-modal">
+                    <div class="timeline-item" data-modal="sysnav-modal">
                         <div class="timeline-header">
-                            <h3 class="timeline-title">Research Intern</h3>
+                            <span class="timeline-role">Research Intern</span>
                             <span class="timeline-date">Aug 2020 — Mar 2021</span>
                         </div>
-                        <p class="timeline-company">SYSNAV</p>
-                        <p class="timeline-location">Vernon, Normandie, France</p>
-                        <p class="timeline-description">
-                            Autonomous Cars: Applied Mathematics, Algorithmics and Data Analysis.
-                        </p>
-                        <div class="timeline-tags">
-                            <span class="timeline-tag">Autonomous Vehicles</span>
-                            <span class="timeline-tag">Applied Mathematics</span>
-                            <span class="timeline-tag">Algorithms</span>
-                        </div>
-                        <span class="card-hint">click for details</span>
+                        <span class="timeline-company">SYSNAV</span>
+                        <div class="timeline-hint">click for details</div>
                     </div>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-card" data-modal="lfv-modal">
+                    <div class="timeline-item" data-modal="lfv-modal">
                         <div class="timeline-header">
-                            <h3 class="timeline-title">Research Student</h3>
-                            <span class="timeline-date">Mar 2020 — Apr 2020</span>
+                            <span class="timeline-role">Research Student</span>
+                            <span class="timeline-date">Mar — Apr 2020</span>
                         </div>
-                        <p class="timeline-company">LFV (Swedish Air Navigation Services)</p>
-                        <p class="timeline-location">Gif-sur-Yvette, France</p>
-                        <p class="timeline-description">
-                            Air Traffic Flow Management Problem Formulation. Implementing structured 
-                            code and developing heuristics for traffic flow optimization.
-                        </p>
-                        <div class="timeline-tags">
-                            <span class="timeline-tag">Optimization</span>
-                            <span class="timeline-tag">Heuristics</span>
-                            <span class="timeline-tag">Operations Research</span>
-                        </div>
-                        <span class="card-hint">click for details</span>
+                        <span class="timeline-company">LFV (Swedish Air Navigation)</span>
+                        <div class="timeline-hint">click for details</div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- Education Section -->
-        <section id="education">
-            <div class="section-header">
-                <h2>education</h2>
-            </div>
-            <div class="timeline">
-                <div class="timeline-item">
-                    <div class="timeline-card" data-modal="centralesupelec-modal">
-                        <div class="timeline-header">
-                            <h3 class="timeline-title">MSc Applied Mathematics, Data Science</h3>
-                            <span class="timeline-date">2018 — 2022</span>
+            <!-- Right Stack: Education + Projects -->
+            <div class="right-stack">
+                <!-- Education Section -->
+                <section class="section education-section">
+                    <h2 class="section-title">education</h2>
+                    <div class="education-list">
+                        <div class="education-item" data-modal="centralesupelec-modal">
+                            <div class="education-header">
+                                <span class="education-degree">MSc Applied Mathematics, Data Science</span>
+                                <span class="education-date">2018 — 2022</span>
+                            </div>
+                            <span class="education-school">CentraleSupélec — Paris-Saclay</span>
+                            <div class="education-hint">click for details</div>
                         </div>
-                        <p class="timeline-company">CentraleSupélec — Paris-Saclay University</p>
-                        <p class="timeline-location">Paris, France</p>
-                        <p class="timeline-description">
-                            Top 2 French engineering school, part of Paris-Saclay University. 
-                            Final year in MDS Paris-Saclay track (Sciences des Données et de l'Information) — 
-                            at the intersection of mathematics and computer science.
-                        </p>
-                        <div class="timeline-tags">
-                            <span class="timeline-tag">Machine Learning</span>
-                            <span class="timeline-tag">Deep Learning</span>
-                            <span class="timeline-tag">NLP</span>
-                            <span class="timeline-tag">Computer Vision</span>
+                        <div class="education-item" data-modal="prepa-modal">
+                            <div class="education-header">
+                                <span class="education-degree">Classes Préparatoires MPSI/MP</span>
+                                <span class="education-date">2015 — 2018</span>
+                            </div>
+                            <span class="education-school">Lycée Ibn Abdoun</span>
+                            <div class="education-hint">click for details</div>
                         </div>
-                        <span class="card-hint">click for details</span>
                     </div>
-                </div>
+                </section>
 
-                <div class="timeline-item">
-                    <div class="timeline-card" data-modal="prepa-modal">
-                        <div class="timeline-header">
-                            <h3 class="timeline-title">Classes Préparatoires MPSI/MP</h3>
-                            <span class="timeline-date">2015 — 2018</span>
+                <!-- Projects Section -->
+                <section class="section projects-section">
+                    <h2 class="section-title">projects</h2>
+                    <div class="projects-grid">
+                        <div class="project-card">
+                            <div class="project-name">air-traffic-rerouting</div>
+                            <p class="project-desc">Optimization algorithms for air traffic flow management</p>
+                            <a href="https://walidhadri.medium.com/the-air-traffic-flow-management-rerouting-problem-534fbcc3e977" class="project-link" target="_blank">[article]</a>
                         </div>
-                        <p class="timeline-company">Lycée Ibn Abdoun</p>
-                        <p class="timeline-description">
-                            Two-year intensive program in Mathematics and Physics, preparing for 
-                            the highly competitive entrance exams to France's top engineering schools.
-                        </p>
-                        <div class="timeline-tags">
-                            <span class="timeline-tag">Advanced Mathematics</span>
-                            <span class="timeline-tag">Physics</span>
-                            <span class="timeline-tag">Competitive Exams</span>
-                        </div>
-                        <span class="card-hint">click for details</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Skills Section -->
-        <section id="skills">
-            <div class="section-header">
-                <h2>skills</h2>
-            </div>
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h3>deep_learning</h3>
-                    <div class="skill-list">
-                        <span class="skill-tag">PyTorch</span>
-                        <span class="skill-tag">HuggingFace</span>
-                        <span class="skill-tag">Transformers</span>
-                        <span class="skill-tag">CNNs</span>
-                        <span class="skill-tag">LLMs</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>computer_vision</h3>
-                    <div class="skill-list">
-                        <span class="skill-tag">Document AI</span>
-                        <span class="skill-tag">LayoutLM</span>
-                        <span class="skill-tag">YOLO</span>
-                        <span class="skill-tag">OCR</span>
-                        <span class="skill-tag">Table Extraction</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>nlp</h3>
-                    <div class="skill-list">
-                        <span class="skill-tag">LLMs</span>
-                        <span class="skill-tag">Transformers</span>
-                        <span class="skill-tag">BERT</span>
-                        <span class="skill-tag">GPT</span>
-                        <span class="skill-tag">Text Classification</span>
-                        <span class="skill-tag">Tokenizers</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>data_&_mlops</h3>
-                    <div class="skill-list">
-                        <span class="skill-tag">EDA</span>
-                        <span class="skill-tag">Python</span>
-                        <span class="skill-tag">SQL</span>
-                        <span class="skill-tag">Pandas</span>
-                        <span class="skill-tag">NumPy</span>
-                        <span class="skill-tag">Git</span>
-                        <span class="skill-tag">MLflow</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>mathematics</h3>
-                    <div class="skill-list">
-                        <span class="skill-tag">Optimization</span>
-                        <span class="skill-tag">Statistics</span>
-                        <span class="skill-tag">Probability</span>
-                        <span class="skill-tag">Linear Algebra</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>research</h3>
-                    <div class="skill-list">
-                        <span class="skill-tag">State-of-the-art Implementation</span>
-                        <span class="skill-tag">Model Fine-tuning</span>
-                        <span class="skill-tag">Technical Writing</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section id="projects">
-            <div class="section-header">
-                <h2>projects</h2>
-            </div>
-            <div class="projects-list">
-                <!-- TODO: Add your real projects here -->
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3 class="project-title">air-traffic-rerouting</h3>
-                        <div class="project-links">
-                            <a href="https://walidhadri.medium.com" class="project-link" target="_blank">[article]</a>
-                        </div>
-                    </div>
-                    <p class="project-description">
-                        Air Traffic Flow Management Rerouting Problem. Developed optimization 
-                        algorithms and heuristics to solve complex traffic flow management 
-                        problems for air navigation services.
-                    </p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Python</span>
-                        <span class="tech-tag">Optimization</span>
-                        <span class="tech-tag">Heuristics</span>
-                        <span class="tech-tag">Operations Research</span>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3 class="project-title">autonomous-navigation</h3>
-                        <div class="project-links">
-                            <a href="#" class="project-link">[details]</a>
-                        </div>
-                    </div>
-                    <p class="project-description">
-                        Research on self-driving cars at SYSNAV. Applied mathematics, algorithmics 
-                        and data analysis for autonomous vehicle navigation systems.
-                    </p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Python</span>
-                        <span class="tech-tag">Applied Mathematics</span>
-                        <span class="tech-tag">Sensor Fusion</span>
-                        <span class="tech-tag">Algorithms</span>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3 class="project-title">ml-tutorials</h3>
-                        <div class="project-links">
+                        <div class="project-card">
+                            <div class="project-name">ml-tutorials</div>
+                            <p class="project-desc">Technical articles on ML fundamentals</p>
                             <a href="https://walidhadri.medium.com" class="project-link" target="_blank">[medium]</a>
                         </div>
-                    </div>
-                    <p class="project-description">
-                        Series of technical articles on Machine Learning fundamentals. 
-                        Covering supervised learning, bias-variance tradeoff, KNN algorithms, 
-                        and the distinctions between ML, Data Science, and AI.
-                    </p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Technical Writing</span>
-                        <span class="tech-tag">Machine Learning</span>
-                        <span class="tech-tag">Education</span>
-                    </div>
-                </div>
-
-                <div class="project-card">
-                    <div class="project-header">
-                        <h3 class="project-title">vehicle-residual-value</h3>
-                        <div class="project-links">
-                            <a href="#" class="project-link">[details]</a>
+                        <div class="project-card">
+                            <div class="project-name">document-ai-pipeline</div>
+                            <p class="project-desc">End-to-end document understanding engine</p>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-name">vehicle-residual-value</div>
+                            <p class="project-desc">Predictive model for leasing contracts</p>
                         </div>
                     </div>
-                    <p class="project-description">
-                        Predictive model for estimating residual value of vehicles after 
-                        leasing contracts. Built during internship at Arval BNP Paribas Group.
-                    </p>
-                    <div class="project-tech">
-                        <span class="tech-tag">Python</span>
-                        <span class="tech-tag">Predictive Modeling</span>
-                        <span class="tech-tag">Finance</span>
-                        <span class="tech-tag">Regression</span>
-                    </div>
-                </div>
+                </section>
             </div>
-        </section>
-    </main>
+        </main>
+    </div>
 
-    <!-- Experience Modals -->
+    <!-- Modals -->
     <div class="modal-overlay" id="upskills-modal">
         <div class="modal-content">
             <button class="modal-close">&times;</button>
@@ -1725,63 +1192,38 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <p class="footer-text">
-            Built with raw HTML/CSS — no frameworks, no dependencies
-        </p>
-        <p class="footer-prompt">$ echo "Let's connect"</p>
-    </footer>
-
-    <!-- ML/AI background rain effect script -->
+    <!-- Scripts -->
     <script>
+        // Copy email function
+        function copyEmail(e) {
+            e.preventDefault();
+            navigator.clipboard.writeText('wa.hadri.1@gmail.com').then(() => {
+                const toast = document.getElementById('emailToast');
+                toast.classList.add('show');
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2500);
+            });
+        }
+
+        // Matrix background
         const matrix = document.getElementById('matrix');
         const mlTerms = [
             '∇L(θ)', '∂f/∂x', 'Σ', '∫', 'argmin', 'argmax', 'softmax', 'σ(x)', 'ReLU', 'tanh',
-            '∞', '→', '≈', '∈', '∀', '∃', 'λ', 'α', 'β', 'γ', 'θ', 'μ', '∂', 'Δ', '∏', '√',
-            'log', 'exp', 'P(x|y)', 'E[X]', 'Var(X)', '∇²', 'xᵀWx', '||x||₂', 'O(n²)',
-            'f(x)=Wx+b', 'ŷ=σ(Wx+b)', 'H(p,q)', 'D_KL(P||Q)', 'MSE', 'MAE', 'BCE',
-            'CrossEntropy', 'L1', 'L2', 'KL-divergence', 'Huber', 'Hinge', 'Focal', 'Dice',
-            'IoU_loss', 'Triplet', 'Contrastive', 'InfoNCE', 'CLIP_loss', 'SGD', 'Adam',
-            'AdamW', 'RMSprop', 'momentum', 'lr=0.001', 'lr=3e-4', 'batch_size=32',
-            'epochs=100', 'weight_decay', 'grad_clip', 'warmup', 'cosine_annealing',
-            'OneCycleLR', 'ReduceLROnPlateau', 'LBFGS', 'Adagrad', 'Adadelta', 'NAdam',
-            'LAMB', 'transformer', 'attention', 'self-attention', 'multi-head', 'BERT',
-            'GPT', 'GPT-4', 'LLaMA', 'Claude', 'LLM', 'CNN', 'RNN', 'LSTM', 'GRU', 'GAN',
-            'VAE', 'diffusion', 'DDPM', 'embedding', 'tokenizer', 'fine-tune', 'pre-train',
-            'backprop', 'forward_pass', 'dropout', 'BatchNorm', 'LayerNorm', 'RMSNorm',
-            'skip_connection', 'residual', 'dense_layer', 'feedforward', 'MLP',
-            'autoencoder', 'latent_space', 'encoder', 'decoder', 'bottleneck',
-            'feature_map', 'activation', 'gradient', 'chain_rule', 'Xavier_init',
-            'He_init', 'frozen_layers', 'LoRA', 'QLoRA', 'PEFT', 'adapter', 'NLP', 'NER',
-            'POS', 'seq2seq', 'BLEU', 'ROUGE', 'perplexity', 'cosine_sim', 'TF-IDF',
-            'word2vec', 'GloVe', 'FastText', 'BPE', 'SentencePiece', 'tokenize',
-            'vocab_size', 'context_window', 'causal_mask', 'padding', '[CLS]', '[SEP]',
-            '[MASK]', 'RAG', 'retrieval', 'chunking', 'semantic_search', 'vector_db',
-            'FAISS', 'prompt', 'zero-shot', 'few-shot', 'CoT', 'instruction_tuning',
-            'RLHF', 'DPO', 'SFT', 'ResNet', 'VGG', 'YOLO', 'YOLOv8', 'ViT', 'CLIP',
-            'DINO', 'SAM', 'convolution', 'pooling', 'max_pool', 'avg_pool', 'stride',
-            'kernel', '3x3', 'IoU', 'mAP', 'precision', 'recall', 'F1', 'bounding_box',
-            'segmentation', 'detection', 'classification', 'augmentation', 'flip',
-            'rotate', 'crop', 'normalize', 'ImageNet', 'COCO', 'model.train()',
-            'model.eval()', 'loss.backward()', 'optimizer.step()', 'optimizer.zero_grad()',
-            'torch.tensor', 'torch.no_grad()', 'np.array', 'fit()', 'predict()',
-            'transform()', '.cuda()', '.to(device)', 'DataLoader', 'Dataset', 'nn.Module',
-            'forward()', '__init__()', 'pip install', 'import torch', 'import numpy as np',
-            'from transformers import', 'model.save()', 'model.load()', 'checkpoint',
-            'wandb.log()', 'tqdm', 'shuffle=True', 'accuracy', 'precision', 'recall',
-            'F1-score', 'AUC-ROC', 'confusion_matrix', 'TP', 'FP', 'TN', 'FN', 'R²',
-            'RMSE', 'MAE', 'log_loss', 'top-k', 'MRR', 'NDCG', 'hit_rate', 'Bayes',
-            'P(A|B)', 'likelihood', 'posterior', 'prior', 'MLE', 'MAP', 'Gaussian',
-            'N(0,1)', 'μ=0', 'σ²', 'covariance', 'correlation', 'PCA', 'SVD',
-            'eigenvalue', 'eigenvector', 'Jacobian', 'Hessian', 'convex', 'non-convex',
-            'global_min', 'local_min', 'saddle_point'
+            'λ', 'α', 'β', 'γ', 'θ', 'μ', '∂', 'Δ', '√', 'log', 'exp', 'P(x|y)', 'E[X]',
+            'MSE', 'MAE', 'BCE', 'CrossEntropy', 'Adam', 'SGD', 'lr=0.001', 'batch_size=32',
+            'transformer', 'attention', 'BERT', 'GPT', 'LLM', 'CNN', 'LSTM', 'GAN', 'VAE',
+            'embedding', 'tokenizer', 'fine-tune', 'dropout', 'BatchNorm', 'LayerNorm',
+            'LoRA', 'PEFT', 'NLP', 'BLEU', 'ROUGE', 'RAG', 'FAISS', 'prompt', 'zero-shot',
+            'ResNet', 'YOLO', 'ViT', 'CLIP', 'convolution', 'IoU', 'mAP', 'precision',
+            'model.train()', 'loss.backward()', 'torch.tensor', 'DataLoader', 'nn.Module',
+            'accuracy', 'F1-score', 'AUC-ROC', 'Bayes', 'Gaussian', 'PCA', 'SVD'
         ];
 
         const layers = [
-            { class: 'layer-back', count: 60, speedMin: 60, speedMax: 100 },
-            { class: 'layer-mid', count: 40, speedMin: 45, speedMax: 75 },
-            { class: 'layer-front', count: 25, speedMin: 35, speedMax: 55 }
+            { class: 'layer-back', count: 40, speedMin: 60, speedMax: 100 },
+            { class: 'layer-mid', count: 25, speedMin: 45, speedMax: 75 },
+            { class: 'layer-front', count: 15, speedMin: 35, speedMax: 55 }
         ];
 
         layers.forEach(layer => {
@@ -1789,39 +1231,21 @@
                 const term = document.createElement('div');
                 term.className = `ml-term ${layer.class}`;
                 term.textContent = mlTerms[Math.floor(Math.random() * mlTerms.length)];
-                
-                // Random horizontal position across full width
                 term.style.left = `${Math.random() * 100}%`;
-                
-                // Random animation duration (speed)
                 const duration = layer.speedMin + Math.random() * (layer.speedMax - layer.speedMin);
                 term.style.animationDuration = `${duration}s`;
-                
-                // Random start delay (stagger the terms)
                 term.style.animationDelay = `${-Math.random() * duration}s`;
-                
                 matrix.appendChild(term);
             }
         });
 
-        // Smooth scroll for navigation
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
-
-        // Modal functionality - click to open
-        const timelineCards = document.querySelectorAll('.timeline-card[data-modal]');
+        // Modal functionality
+        const modalTriggers = document.querySelectorAll('[data-modal]');
         const modals = document.querySelectorAll('.modal-overlay');
-        
-        timelineCards.forEach(card => {
-            card.addEventListener('click', () => {
-                const modalId = card.getAttribute('data-modal');
+
+        modalTriggers.forEach(trigger => {
+            trigger.addEventListener('click', () => {
+                const modalId = trigger.getAttribute('data-modal');
                 const modal = document.getElementById(modalId);
                 if (modal) {
                     modal.classList.add('active');
@@ -1831,7 +1255,6 @@
         });
 
         modals.forEach(modal => {
-            // Close on overlay click
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     modal.classList.remove('active');
@@ -1839,7 +1262,6 @@
                 }
             });
 
-            // Close on X button
             const closeBtn = modal.querySelector('.modal-close');
             if (closeBtn) {
                 closeBtn.addEventListener('click', () => {
@@ -1849,12 +1271,9 @@
             }
         });
 
-        // Close on Escape key
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                modals.forEach(modal => {
-                    modal.classList.remove('active');
-                });
+                modals.forEach(modal => modal.classList.remove('active'));
                 document.body.style.overflow = '';
             }
         });
