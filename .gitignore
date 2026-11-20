@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.impeccable/questions/
+.impeccable/mocks/
+.impeccable/review/
+.impeccable/config.local.json
+.impeccable/decision/
+.impeccable/briefs/
+.impeccable/reference/

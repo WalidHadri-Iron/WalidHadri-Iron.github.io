@@ -1,0 +1,33 @@
+---
+// A screen recording printed as a film: halftone develop, loops only while visible, always pausable.
+import Icon from "./Icon.astro";
+interface Props { src: string; poster: string; width: number; height: number; alt: string; class?: string; develop?: "in" | "scroll" }
+const { src, poster, width, height, alt, class: cls = "", develop = "scroll" } = Astro.props;
+---
+<figure class:list={["clip", cls]} data-clip>
+  <video class:list={["develop", "spot", develop === "in" && "develop-in"]} muted loop playsinline preload="metadata"
+    poster={poster} width={width} height={height} aria-label={alt}>
+    <source src={src} type="video/mp4" />
+  </video>
+  <button class="clip-toggle" type="button" aria-pressed="false">
+    <span class="i-pause"><Icon name="pause" /></span><span class="i-play"><Icon name="play" /></span>
+    <span class="lbl">Pause</span>
+  </button>
+</figure>
+<style>
+  .clip { position: relative; margin: 0; background: var(--ink); }
+  .clip video { width: 100%; height: auto; }
+  .clip-toggle {
+    position: absolute; right: 10px; bottom: 10px;
+    display: inline-flex; align-items: center; gap: 6px;
+    font: 700 0.75rem/1 var(--font); font-stretch: 82%; letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--ink); background: var(--paper); border: 0; padding: 8px 10px; cursor: pointer;
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .clip:hover .clip-toggle, .clip-toggle:focus-visible, .clip-toggle[aria-pressed="true"] { opacity: 1; }
+  .clip-toggle :global(svg) { width: 12px; height: 12px; }
+  .clip-toggle .i-play { display: none; }
+  .clip-toggle[aria-pressed="true"] .i-play { display: block; }
+  .clip-toggle[aria-pressed="true"] .i-pause { display: none; }
+  @media (hover: none) { .clip-toggle { opacity: 1; } }
+</style>

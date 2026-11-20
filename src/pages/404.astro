@@ -1,0 +1,22 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+---
+<Base title="Not found · Walid Hadri" description="This page isn't on the sheet.">
+  <section class="nf" data-section>
+    <div class="sheet">
+      <h1 class="film film--ink nf-film"><span class="display nf-word">404</span></h1>
+      <div class="slip nf-slip">
+        <p class="lede">This page isn't on the sheet. It may have moved when the site was rebuilt.</p>
+        <a class="action action--yellow" href="/">Go to the home page <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+</Base>
+<style>
+  .nf { padding-top: calc(120px + env(safe-area-inset-top, 0px)); }
+  .nf-film { grid-column: 1 / 8; justify-self: start; padding: 0.06em 0.14em 0; rotate: -1.4deg; margin: 0; }
+  .nf-word { font-size: clamp(6rem, 26vw, 20rem); color: var(--paper); }
+  .nf-slip { grid-column: 4 / 10; margin-top: -1.6rem; z-index: 2; display: grid; gap: 18px; justify-items: start; }
+  @media (max-width: 860px) { .nf-film, .nf-slip { grid-column: 1 / -1; } }
+</style>

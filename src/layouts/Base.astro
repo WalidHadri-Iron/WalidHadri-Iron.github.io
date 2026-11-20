@@ -1,0 +1,109 @@
+---
+import "../styles/global.css";
+import Icon from "../components/Icon.astro";
+import Marks from "../components/Marks.astro";
+import { LINKEDIN, LINKS } from "../data/profile";
+
+interface Props { title: string; description: string; nav?: { label: string; href: string }[] }
+const { title, description, nav = [] } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin />
+    <meta name="theme-color" content="#e4e7e1" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary" />
+  </head>
+  <body>
+    <a class="skip action" href="#main">Skip to content</a>
+    <header class="top">
+      <nav class="top-nav" aria-label="Sections">
+        <a href="/" class="top-home label">Walid Hadri</a>
+        {nav.map((n) => <a href={n.href} class="label">{n.label}</a>)}
+      </nav>
+    </header>
+    <a class="linkedin action action--yellow" href={LINKEDIN} rel="me">
+      LinkedIn <Icon name="arrow" />
+    </a>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="close" data-section>
+      <div class="sheet close-sheet">
+        <a class="close-film film film--ink spot" href={LINKEDIN} rel="me" data-depth="-0.05">
+          <span class="display close-word">Say hello</span>
+          <span class="close-on label">on LinkedIn <Icon name="arrow" /></span>
+        </a>
+        <div class="close-slip slip" data-depth="0.04">
+          <Marks />
+          <p class="label">Elsewhere</p>
+          <ul class="close-links">
+            {LINKS.map((l) => <li><a href={l.href} rel="me">{l.label}</a></li>)}
+          </ul>
+          <p class="close-note muted">Built with Astro. Videos, articles and stars refresh every night.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      import "../scripts/montage.ts";
+    </script>
+  </body>
+</html>
+
+<style>
+  .skip { position: fixed; left: 12px; top: -80px; z-index: 50; }
+  .skip:focus { top: calc(12px + env(safe-area-inset-top, 0px)); }
+
+  .top {
+    position: absolute; inset: 0 0 auto 0; z-index: 20;
+    padding-top: calc(22px + env(safe-area-inset-top, 0px));
+    padding-left: max(var(--gutter), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
+  }
+  .top-nav { display: flex; flex-wrap: wrap; gap: 6px 22px; max-width: calc(var(--max) - 2 * var(--gutter)); margin-inline: auto; padding-right: 150px; }
+  .top-nav a { text-decoration: none; }
+  .top-nav a:hover { text-decoration: underline; text-decoration-color: var(--teal); }
+  .top-home { color: var(--ink); }
+  .top-nav a:not(.top-home) { color: var(--ink-2); }
+
+  .linkedin {
+    position: fixed; z-index: 30;
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    right: max(var(--gutter), env(safe-area-inset-right, 0px));
+    box-shadow: 0 6px 18px -8px rgb(18 20 23 / 0.35);
+  }
+
+  .close { padding-block: var(--space) calc(64px + env(safe-area-inset-bottom, 0px)); }
+  .close-sheet { align-items: end; }
+  .close-film {
+    grid-column: 1 / 10; text-decoration: none; padding: clamp(20px, 3vw, 40px);
+    rotate: -1.2deg; display: grid; gap: 18px;
+  }
+  .close-word { font-size: clamp(4.5rem, 15vw, 14rem); color: var(--paper); }
+  .close-on { display: inline-flex; gap: 8px; align-items: center; color: var(--yellow); font-size: 1rem; }
+  .close-on :global(svg) { width: 18px; height: 18px; }
+  .close-film:hover .close-word { color: var(--yellow); }
+  .close-slip { grid-column: 9 / 13; margin-bottom: -28px; z-index: 2; }
+  .close-links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; font-weight: 600; }
+  .close-note { margin-top: 18px; font-size: 0.875rem; }
+  @media (max-width: 860px) {
+    .close-film, .close-slip { grid-column: 1 / -1; }
+    .close-slip { margin: -12px 12px 0; }
+    .top-nav { padding-right: 0; row-gap: 26px; }
+    .top-home { flex-basis: 100%; padding-right: 132px; }
+  }
+</style>

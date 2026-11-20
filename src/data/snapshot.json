@@ -1,0 +1,17 @@
+{
+  "_note": "Fallback used only when a feed can't be reached at build time. Captured 2026-11-20.",
+  "videos": [
+    { "id": "kChLGU7ArTQ", "title": "You're Learning LLMs in the Wrong Order", "published": "2026-11-18" },
+    { "id": "cLWAiVIVr4U", "title": "In 19 Minutes, You will understand 10 years of LLMs", "published": "2026-11-14" },
+    { "id": "GWjA5eHIXXk", "title": "What Happens When You Hit Enter in ChatGPT?", "published": "2026-11-12" }
+  ],
+  "posts": [
+    { "title": "You’re Learning LLMs in the Wrong Order", "url": "https://walidhadri.medium.com/youre-learning-llms-in-the-wrong-order-7463641f26f9", "published": "2026-11-18" },
+    { "title": "You Will Understand 10 Years of LLMs", "url": "https://walidhadri.medium.com/you-will-understand-10-years-of-llms-d80b647375d3", "published": "2026-11-15" },
+    { "title": "What Actually Happens When You Press Enter on ChatGPT", "url": "https://walidhadri.medium.com/what-actually-happens-when-you-press-enter-on-chatgpt-b2ca191f5335", "published": "2026-11-13" },
+    { "title": "PicoClaw: Running an AI Agent on $10 Hardware", "url": "https://walidhadri.medium.com/picoclaw-running-an-ai-agent-on-10-hardware-400e85663962", "published": "2026-02-25" },
+    { "title": "Claude Code Just Got Remote Control and It Changes How You Work", "url": "https://walidhadri.medium.com/claude-code-just-got-remote-control-and-it-changes-how-you-work-40e0dd3150f5", "published": "2026-02-24" },
+    { "title": "Table Detection in 2026: A Practical Guide to Models, Datasets, and Weights", "url": "https://walidhadri.medium.com/table-detection-in-2026-a-practical-guide-to-models-datasets-and-weights-141e881619c8", "published": "2026-02-17" }
+  ],
+  "stars": { "dowse": 16, "dowse-obsidian": 19, "awesome-table-detection-2026": 2, "awesome-ocr-2026": 1 }
+}

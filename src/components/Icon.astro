@@ -1,0 +1,11 @@
+---
+// One stroke weight for every icon on the site.
+interface Props { name: "arrow" | "star" | "play" | "pause"; label?: string }
+const { name, label } = Astro.props;
+---
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="square" stroke-linejoin="miter" aria-hidden={label ? undefined : "true"} role={label ? "img" : undefined} aria-label={label}>
+  {name === "arrow" && <path d="M7 17 17 7M9 7h8v8" />}
+  {name === "star" && <path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.8l-5.2 2.8 1-5.8-4.3-4.1 5.9-.8z" fill="currentColor" stroke="none" />}
+  {name === "play" && <path d="M8 5.5v13l10-6.5z" fill="currentColor" stroke="none" />}
+  {name === "pause" && <path d="M8 5.5v13M16 5.5v13" stroke-width="3" />}
+</svg>
